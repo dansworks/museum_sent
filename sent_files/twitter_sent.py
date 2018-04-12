@@ -1,25 +1,16 @@
 import os
 import sys
-
 sys.path.insert(0, '../config')
 from textblob import TextBlob
-
 from twitter_config import api
-
 from db_funcs import db_insert_recent_tweets_sent
 from func import recent_tweets
-
 import time
-
 import mysql.connector
 import tweepy
 
-
-		
-# museums = ['@legionofhonor', '@sfmoma', '@oaklandmuseumca', '@asianartmuseum', '@deyoungmuseum', '@sfmexicanmuseum']
+	
 museums = ['@legionofhonor', '@sfmoma', '@oaklandmuseumca', '@asianartmuseum', '@deyoungmuseum', '@MuseumModernArt', '@LACMA']
-
-
 
 for museum in museums:
 	try:
@@ -32,9 +23,8 @@ for museum in museums:
 	try:
 		for tweet in tweet_arr[1]: 
 			blob = TextBlob(tweet)
-
 			for sentence in blob.sentences:
-				print(sentence.sentiment)
+				# print(sentence.sentiment)
 				gross_polarity += sentence.sentiment.polarity
 				gross_subjectivity +=sentence.sentiment.subjectivity
 				count += 1
@@ -49,7 +39,9 @@ for museum in museums:
 		print(str(e))
 
 	try:
-		db_insert_recent_tweets_sent(avg_gp, avg_gs,'recent_tweets', tweet_arr[0])
+		# enter results into desired DB.
+		print("Store data")
+		# db_insert_recent_tweets_sent(avg_gp, avg_gs,'recent_tweets', tweet_arr[0])
 	except Exception as e:
 		print(str(e))
 	

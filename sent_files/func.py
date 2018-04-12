@@ -1,40 +1,60 @@
 import os
 import sys
-
 sys.path.insert(0, '../config')
 from twitter_config import api
 import tweepy
-
+import re
 
 
 def get_user_timeline_tweets(usernames):
 	global api
+	# grab recent timeline tweets by selected twitter user_names. Pass in as list.
 	u_names = usernames
 	for username in u_names:
 		user = api.get_user(username)
 		tweets = []
-		# print(user.screen_name)
-		# print(user.id)
 		tweet = api.user_timeline(user_id = user.id, count =20)
-
-		# tweet_status = api.statuses_lookup()
 		for i in tweet:
-			# print(i.text)
 			tweets.append(i.text)
-
-	print(len(tweets))	
-
 	return tweets
 
 def recent_tweets(search_word, num_find = 100):
+	#grabs recent tweets by query. checks user of tweet removes users likley to be spam or bots.
 	global api
 	query = search_word
 	max_tweets = num_find
 	tweets = []
+	count_added = 0
+	count_removed = 0
 	searched_tweets = [status for status in tweepy.Cursor(api.search, q=query).items(max_tweets)]
 	for j in searched_tweets:
-		print(j.text)
-		tweets.append(j.text)
-
-
+		followers = j.author.followers_count
+		favorites = j.author.favourites_count
+		statuses_count  = j.author.statuses_count
+		background_img = j.author.profile_use_background_image
+		screen_name = j.author.screen_name
+		profile_img = j.author.default_profile_image
+		#print(followers, favorites, statuses_count, background_img, profile_img, screen_name)
+		if followers > 20 and favorites > 20 and statuses_count > 20 and profile_img == False:
+			tweets.append(j.text)
+			count_added += 1
+		else:
+			count_removed += 1
+	print(count_added, count_removed)
 	return (query,tweets)
+
+
+def remove_spamy_tweets(tweet_string):
+	# uses voting system to remove tweets that are spamy
+	# when called check if return is 0 if not remove tweet.
+	vote = 0
+	tweet = str(tweet_string.lower())
+	spamy_phrases = ["special offer"]
+	for spammy_phrase in spamy_phrases:
+		found = re.findall('\\b' + spammy_phrase + '\\b', tweet)
+		if found:
+		    num_found -= 1
+	return vote
+
+
+
