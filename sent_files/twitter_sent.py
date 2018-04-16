@@ -12,8 +12,8 @@ import tweepy
 reload(sys)  
 sys.setdefaultencoding('utf8')
 
-#query_words = ["@sfmoma", "@oaklandmuseumca", "@asianartmuseum", "@MuseumModernArt", "@LACMA"]	
-query_words = ["bitcoin",'ethereum']
+query_words = ["@sfmoma","elmuseo", "@oaklandmuseumca", "@asianartmuseum", "@MuseumModernArt", "@LACMA"]	
+
 
 for q_word in query_words:
 	try:
